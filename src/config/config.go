@@ -21,10 +21,9 @@ func Load() {
 		log.Fatal(err)
 	}
 
-	Port, err := strconv.Atoi(os.Getenv("API_PORT"))
+	Port, err = strconv.Atoi(os.Getenv("API_PORT"))
 	if err != nil {
 		Port = 5000
-		fmt.Printf("Defaulting to port %d", Port)
 	}
 
 	ConnectionString = fmt.Sprintf("%s:%s@/%s?charset=utf8&parseTime=True&loc=Local",
