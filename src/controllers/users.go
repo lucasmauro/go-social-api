@@ -56,6 +56,7 @@ func GetUsers(w http.ResponseWriter, r *http.Request) {
 	db, err := database.Connect()
 	if err != nil {
 		responses.Error(w, http.StatusInternalServerError, err)
+		return
 	}
 	defer db.Close()
 
@@ -64,6 +65,7 @@ func GetUsers(w http.ResponseWriter, r *http.Request) {
 	users, err := repository.Find(nameOrNickname)
 	if err != nil {
 		responses.Error(w, http.StatusInternalServerError, err)
+		return
 	}
 
 	responses.JSON(w, http.StatusOK, users)
