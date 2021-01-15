@@ -22,7 +22,7 @@ func (repository UsersRepository) Create(user models.User) (uint64, error) {
 	}
 	defer statement.Close()
 
-	result, err := statement.Exec(user.Name, user.Nickame, user.Email, user.Password)
+	result, err := statement.Exec(user.Name, user.Nickname, user.Email, user.Password)
 	if err != nil {
 		return 0, err
 	}
