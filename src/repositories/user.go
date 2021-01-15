@@ -42,10 +42,10 @@ func (repository UsersRepository) Find(nameOrNickname string) ([]models.User, er
 	return users, nil
 }
 
-func (repository UsersRepository) Get(Id uint64) (models.User, error) {
+func (repository UsersRepository) Get(ID uint64) (models.User, error) {
 	lines, err := repository.db.Query(
 		"SELECT id, name, nickname, email, createdAt FROM users WHERE id = ?",
-		Id,
+		ID,
 	)
 	if err != nil {
 		return models.User{}, err
@@ -77,10 +77,10 @@ func (repository UsersRepository) Create(user models.User) (uint64, error) {
 		return 0, err
 	}
 
-	userId, err := result.LastInsertId()
+	userID, err := result.LastInsertId()
 	if err != nil {
 		return 0, err
 	}
 
-	return uint64(userId), nil
+	return uint64(userID), nil
 }
