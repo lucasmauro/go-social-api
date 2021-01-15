@@ -6,7 +6,6 @@ import (
 	"github.com/gorilla/mux"
 )
 
-// Route represents all API routes
 type Route struct {
 	URI          string
 	Method       string
@@ -14,7 +13,6 @@ type Route struct {
 	AuthRequired bool
 }
 
-// Configure sets the router with all routes
 func Configure(r *mux.Router) *mux.Router {
 	routes := userRoutes
 
