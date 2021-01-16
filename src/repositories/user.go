@@ -84,3 +84,19 @@ func (repository UsersRepository) Create(user models.User) (uint64, error) {
 
 	return uint64(userID), nil
 }
+
+func (repository UsersRepository) Update(userID uint64, user models.User) error {
+	statement, err := repository.db.Prepare(
+		"UPDATE users SET name = ?, nickname = ?, email = ? WHERE id = ?",
+	)
+	if err != nil {
+		return err
+	}
+	defer statement.Close()
+
+	if _, err = statement.Exec(user.Name, user.Nickname, user.Email, userID); err != nil {
+		return err
+	}
+
+	return nil
+}

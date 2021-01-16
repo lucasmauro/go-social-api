@@ -15,8 +15,16 @@ type User struct {
 	CreatedAt time.Time `json:"createdAt,omitempty"`
 }
 
-func (user *User) Prepare() error {
-	if err := user.validate(); err != nil {
+func (user *User) PrepareForCreation() error {
+	return user.prepare(user.validateForCreation)
+}
+
+func (user *User) PrepareForUpdate() error {
+	return user.prepare(user.validateForUpdate)
+}
+
+func (user *User) prepare(validate func() error) error {
+	if err := validate(); err != nil {
 		return err
 	}
 
@@ -24,7 +32,23 @@ func (user *User) Prepare() error {
 	return nil
 }
 
-func (user *User) validate() error {
+func (user *User) validateForCreation() error {
+	if err := user.validateBasicFields(); err != nil {
+		return err
+	}
+
+	if user.Password == "" {
+		return errors.New("Password is mandatory")
+	}
+
+	return nil
+}
+
+func (user *User) validateForUpdate() error {
+	return user.validateBasicFields()
+}
+
+func (user *User) validateBasicFields() error {
 	if user.Name == "" {
 		return errors.New("Name is mandatory")
 	}
@@ -35,10 +59,6 @@ func (user *User) validate() error {
 
 	if user.Email == "" {
 		return errors.New("Email is mandatory")
-	}
-
-	if user.Password == "" {
-		return errors.New("Password is mandatory")
 	}
 
 	return nil
