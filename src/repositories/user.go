@@ -42,10 +42,10 @@ func (repository UsersRepository) Find(nameOrNickname string) ([]models.User, er
 	return users, nil
 }
 
-func (repository UsersRepository) Get(ID uint64) (models.User, error) {
+func (repository UsersRepository) Get(userID uint64) (models.User, error) {
 	lines, err := repository.db.Query(
 		"SELECT id, name, nickname, email, createdAt FROM users WHERE id = ?",
-		ID,
+		userID,
 	)
 	if err != nil {
 		return models.User{}, err
@@ -95,6 +95,20 @@ func (repository UsersRepository) Update(userID uint64, user models.User) error 
 	defer statement.Close()
 
 	if _, err = statement.Exec(user.Name, user.Nickname, user.Email, userID); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (repository UsersRepository) Delete(userID uint64) error {
+	statement, err := repository.db.Prepare("DELETE FROM users WHERE id = ?")
+	if err != nil {
+		return err
+	}
+	defer statement.Close()
+
+	if _, err = statement.Exec(userID); err != nil {
 		return err
 	}
 
