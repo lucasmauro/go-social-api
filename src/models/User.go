@@ -1,6 +1,7 @@
 package models
 
 import (
+	"api/src/security"
 	"errors"
 	"strings"
 	"time"
@@ -18,7 +19,12 @@ type User struct {
 }
 
 func (user *User) PrepareForCreation() error {
-	return user.prepare(user.validateForCreation)
+	err := user.prepare(user.validateForCreation)
+	if err != nil {
+		return err
+	}
+
+	return user.formatPassword()
 }
 
 func (user *User) PrepareForUpdate() error {
@@ -74,4 +80,13 @@ func (user *User) format() {
 	user.Name = strings.TrimSpace(user.Name)
 	user.Nickname = strings.TrimSpace(user.Nickname)
 	user.Email = strings.TrimSpace(user.Email)
+}
+
+func (user *User) formatPassword() error {
+	hash, err := security.Hash(user.Password)
+	if err != nil {
+		return err
+	}
+	user.Password = string(hash)
+	return nil
 }
