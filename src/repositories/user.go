@@ -42,7 +42,7 @@ func (repository UsersRepository) Find(nameOrNickname string) ([]models.User, er
 	return users, nil
 }
 
-func (repository UsersRepository) Get(userID uint64) (models.User, error) {
+func (repository UsersRepository) GetById(userID uint64) (models.User, error) {
 	lines, err := repository.db.Query(
 		"SELECT id, name, nickname, email, createdAt FROM users WHERE id = ?",
 		userID,
@@ -56,6 +56,27 @@ func (repository UsersRepository) Get(userID uint64) (models.User, error) {
 
 	if lines.Next() {
 		if err := lines.Scan(&user.ID, &user.Name, &user.Nickname, &user.Email, &user.CreatedAt); err != nil {
+			return models.User{}, err
+		}
+	}
+
+	return user, nil
+}
+
+func (repository UsersRepository) GetByEmail(email string) (models.User, error) {
+	lines, err := repository.db.Query(
+		"SELECT id, password FROM users WHERE email = ?",
+		email,
+	)
+	if err != nil {
+		return models.User{}, err
+	}
+	defer lines.Close()
+
+	var user models.User
+
+	if lines.Next() {
+		if err := lines.Scan(&user.ID, &user.Password); err != nil {
 			return models.User{}, err
 		}
 	}
