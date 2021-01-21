@@ -19,3 +19,14 @@ CREATE TABLE followers (
     FOREIGN KEY (follower_id) REFERENCES users(id) ON DELETE CASCADE,
     PRIMARY KEY(user_id, follower_id)
 ) ENGINE=INNODB;
+
+DROP TABLE IF EXISTS posts;
+CREATE TABLE posts(
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    title VARCHAR(50) NOT NULL,
+    content VARCHAR(300) NOT NULL,
+    author_id INT NOT NULL,
+    upvotes INT DEFAULT 0,
+    createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY(author_id) REFERENCES users(id) ON DELETE CASCADE
+) ENGINE=INNODB;
