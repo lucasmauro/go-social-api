@@ -32,3 +32,36 @@ func (repository PostRepository) Create(post models.Post) (uint64, error) {
 
 	return uint64(postID), nil
 }
+
+func (repository PostRepository) GetPost(postID uint64) (models.Post, error) {
+	lines, err := repository.db.Query(`
+		SELECT p.*, u.nickname 
+		FROM posts p
+		INNER JOIN users u
+		ON u.id = p.author_id
+		WHERE p.id = ?`,
+		postID,
+	)
+
+	if err != nil {
+		return models.Post{}, err
+	}
+
+	var post models.Post
+
+	if lines.Next() {
+		if err := lines.Scan(
+			&post.ID,
+			&post.Title,
+			&post.Content,
+			&post.AuthorID,
+			&post.UpVotes,
+			&post.CreatedAt,
+			&post.AuthorNickname,
+		); err != nil {
+			return models.Post{}, err
+		}
+	}
+
+	return post, nil
+}
