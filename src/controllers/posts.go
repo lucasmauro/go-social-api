@@ -170,5 +170,42 @@ func UpdatePost(w http.ResponseWriter, r *http.Request) {
 }
 
 func DeletePost(w http.ResponseWriter, r *http.Request) {
+	userID, err := auth.ExtractUserId(r)
+	if err != nil {
+		responses.Error(w, http.StatusUnauthorized, err)
+		return
+	}
 
+	params := mux.Vars(r)
+	postID, err := strconv.ParseUint(params["postID"], 10, 64)
+	if err != nil {
+		responses.Error(w, http.StatusBadRequest, err)
+		return
+	}
+
+	db, err := database.Connect()
+	if err != nil {
+		responses.Error(w, http.StatusInternalServerError, err)
+		return
+	}
+	defer db.Close()
+
+	repository := repositories.NewPostRepository(db)
+	post, err := repository.GetPost(postID)
+	if err != nil {
+		responses.Error(w, http.StatusInternalServerError, err)
+		return
+	}
+
+	if post.AuthorID != userID {
+		responses.Error(w, http.StatusForbidden, errors.New("You may only delete your posts"))
+		return
+	}
+
+	if err = repository.Delete(postID); err != nil {
+		responses.Error(w, http.StatusInternalServerError, err)
+		return
+	}
+
+	responses.JSON(w, http.StatusNoContent, nil)
 }
