@@ -65,3 +65,41 @@ func (repository PostRepository) GetPost(postID uint64) (models.Post, error) {
 
 	return post, nil
 }
+
+func (repository PostRepository) GetPosts(userID uint64) ([]models.Post, error) {
+	lines, err := repository.db.Query(`
+		SELECT DISTINCT p.*, u.nickname FROM posts p 
+		INNER JOIN users u ON u.id = p.author_id 
+		INNER JOIN followers f ON p.author_id = f.user_id 
+		WHERE u.id = ? OR f.follower_id = ?
+		ORDER BY 1 DESC`,
+		userID,
+		userID,
+	)
+	if err != nil {
+		return nil, err
+	}
+	defer lines.Close()
+
+	var posts []models.Post
+
+	for lines.Next() {
+		var post models.Post
+
+		if err = lines.Scan(
+			&post.ID,
+			&post.Title,
+			&post.Content,
+			&post.AuthorID,
+			&post.UpVotes,
+			&post.CreatedAt,
+			&post.AuthorNickname,
+		); err != nil {
+			return nil, err
+		}
+
+		posts = append(posts, post)
+	}
+
+	return posts, nil
+}
