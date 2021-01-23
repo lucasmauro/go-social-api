@@ -32,6 +32,12 @@ var postRoutes = []Route{
 	},
 	{
 		URI:          "/posts/{postID}",
+		Method:       http.MethodPut,
+		Function:     controllers.UpdatePost,
+		AuthRequired: true,
+	},
+	{
+		URI:          "/posts/{postID}",
 		Method:       http.MethodDelete,
 		Function:     controllers.DeletePost,
 		AuthRequired: true,

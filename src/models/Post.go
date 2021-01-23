@@ -25,6 +25,10 @@ func (post *Post) PrepareForCreation() error {
 	return nil
 }
 
+func (post *Post) PrepareForUpdate() error {
+	return post.PrepareForCreation()
+}
+
 func (post *Post) validate() error {
 	if post.Title == "" {
 		return errors.New("Title is mandatory")
