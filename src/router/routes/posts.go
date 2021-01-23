@@ -49,13 +49,13 @@ var postRoutes = []Route{
 		AuthRequired: true,
 	},
 	{
-		URI:          "/posts/{postID}/upvote",
+		URI:          "/posts/{postID}/up-vote",
 		Method:       http.MethodPost,
 		Function:     controllers.UpVotePost,
 		AuthRequired: true,
 	},
 	{
-		URI:          "/posts/{postID}/downvote",
+		URI:          "/posts/{postID}/down-vote",
 		Method:       http.MethodPost,
 		Function:     controllers.DownVotePost,
 		AuthRequired: true,
