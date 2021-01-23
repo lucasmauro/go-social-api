@@ -166,3 +166,17 @@ func (repository PostRepository) GetUserPosts(userID uint64) ([]models.Post, err
 
 	return posts, nil
 }
+
+func (repository PostRepository) UpVote(postID uint64) error {
+	statement, err := repository.db.Prepare("UPDATE posts SET upvotes = upvotes + 1 WHERE id = ?")
+	if err != nil {
+		return err
+	}
+	defer statement.Close()
+
+	if _, err = statement.Exec(postID); err != nil {
+		return err
+	}
+
+	return nil
+}
