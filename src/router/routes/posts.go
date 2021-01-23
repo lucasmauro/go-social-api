@@ -54,4 +54,10 @@ var postRoutes = []Route{
 		Function:     controllers.UpVotePost,
 		AuthRequired: true,
 	},
+	{
+		URI:          "/posts/{postID}/downvote",
+		Method:       http.MethodPost,
+		Function:     controllers.DownVotePost,
+		AuthRequired: true,
+	},
 }

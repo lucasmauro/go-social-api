@@ -180,3 +180,23 @@ func (repository PostRepository) UpVote(postID uint64) error {
 
 	return nil
 }
+
+func (repository PostRepository) DownVote(postID uint64) error {
+	statement, err := repository.db.Prepare(`
+		UPDATE posts SET upvotes =
+		CASE 
+			WHEN upvotes > 0 THEN upvotes - 1
+			ELSE 0 
+		END
+		WHERE id = ?
+	`)
+	if err != nil {
+		return err
+	}
+
+	if _, err = statement.Exec(postID); err != nil {
+		return err
+	}
+
+	return nil
+}
