@@ -251,7 +251,7 @@ func UpVotePost(w http.ResponseWriter, r *http.Request) {
 	defer db.Close()
 
 	repository := repositories.NewPostRepository(db)
-	if err = repository.UpVote(postID); err != nil {
+	if err = repository.UpVotePost(postID); err != nil {
 		responses.Error(w, http.StatusInternalServerError, err)
 		return
 	}
@@ -275,7 +275,7 @@ func DownVotePost(w http.ResponseWriter, r *http.Request) {
 	defer db.Close()
 
 	repository := repositories.NewPostRepository(db)
-	if err = repository.DownVote(postID); err != nil {
+	if err = repository.DownVotePost(postID); err != nil {
 		responses.Error(w, http.StatusInternalServerError, err)
 		return
 	}

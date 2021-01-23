@@ -167,7 +167,7 @@ func (repository PostRepository) GetUserPosts(userID uint64) ([]models.Post, err
 	return posts, nil
 }
 
-func (repository PostRepository) UpVote(postID uint64) error {
+func (repository PostRepository) UpVotePost(postID uint64) error {
 	statement, err := repository.db.Prepare("UPDATE posts SET upvotes = upvotes + 1 WHERE id = ?")
 	if err != nil {
 		return err
@@ -181,7 +181,7 @@ func (repository PostRepository) UpVote(postID uint64) error {
 	return nil
 }
 
-func (repository PostRepository) DownVote(postID uint64) error {
+func (repository PostRepository) DownVotePost(postID uint64) error {
 	statement, err := repository.db.Prepare(`
 		UPDATE posts SET upvotes =
 		CASE 
